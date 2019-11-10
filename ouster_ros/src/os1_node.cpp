@@ -13,6 +13,7 @@
 #include <ros/ros.h>
 #include <fstream>
 #include <sstream>
+#include <unistd.h>
 #include <string>
 
 #include "ouster/os1_packet.h"
@@ -197,9 +198,13 @@ int main(int argc, char** argv) {
                                     OS1::lidar_mode_of_string(lidar_mode),
                                     lidar_port, imu_port);
 
-        if (!cli) {
+        while (!cli) {
             ROS_ERROR("Failed to initialize sensor at: %s", hostname.c_str());
-            return EXIT_FAILURE;
+	    ROS_INFO("Retrying...");
+	    cli = OS1::init_client(hostname, udp_dest,
+                                    OS1::lidar_mode_of_string(lidar_mode),
+                                    lidar_port, imu_port);
+            usleep(1000000);
         }
         ROS_INFO("Sensor reconfigured successfully, waiting for data...");
 
