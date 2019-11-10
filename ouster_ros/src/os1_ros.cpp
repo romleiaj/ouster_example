@@ -30,13 +30,13 @@ sensor_msgs::Imu packet_to_imu_msg(const PacketMsg& p,
     sensor_msgs::Imu m;
     const uint8_t* buf = p.buf.data();
 
-    m.header.stamp.fromNSec(imu_gyro_ts(buf));
+    m.header.stamp = (ros::Time::now());
     m.header.frame_id = frame;
 
     m.orientation.x = 0;
     m.orientation.y = 0;
     m.orientation.z = 0;
-    m.orientation.w = 0;
+    m.orientation.w = 1;
 
     m.linear_acceleration.x = imu_la_x(buf) * standard_g;
     m.linear_acceleration.y = imu_la_y(buf) * standard_g;
